@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-primary bg-gradient text-white py-3">
+                <h2 class="text-center mb-0">
+                    <i class="bi bi-graph-up-arrow me-2"></i>
+                    Agricultural Data Analysis
+                </h2>
+            </div>
+            <div class="card-body p-4">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <form action="{{ url_for('analyze') }}" method="post" enctype="multipart/form-data">
+                            <h5>
+                                <i class="bi bi-cloud-upload me-2"></i>
+                                Upload Your Agricultural Data
+                            </h5>
+                            <p class="text-muted">
+                                Upload a CSV file containing agricultural data
+                            </p>
+                            <div class="bg-light p-3 rounded mb-3">
+                                <ul class="list-unstyled mb-0">
+                                    <li><i class="bi bi-calendar3 me-2"></i>Year</li>
+                                    <li><i class="bi bi-flower1 me-2"></i>Crop</li>
+                                    <li><i class="bi bi-graph-up me-2"></i>Yield</li>
+                                    <li><i class="bi bi-cloud-rain me-2"></i>Rainfall</li>
+                                </ul>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="file" class="form-control" name="file" accept=".csv">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="bi bi-search me-2"></i>
+                                    Analyze All Data
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <form action="{{ url_for('analyze_crop') }}" method="post">
+                            <h5>
+                                <i class="bi bi-filter-square me-2"></i>
+                                Analyze Specific Crop
+                            </h5>
+                            <p class="text-muted">
+                                Select a crop type to see detailed analysis
+                            </p>
+                            <div class="mb-3">
+                                <label class="form-label">Select Crop</label>
+                                <select name="crop" class="form-select" required>
+                                    <option value="">Choose a crop...</option>
+                                    <option value="Wheat">Wheat</option>
+                                    <option value="Rice">Rice</option>
+                                    <option value="Corn">Corn</option>
+                                    <option value="Soybeans">Soybeans</option>
+                                    <option value="Cotton">Cotton</option>
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success px-4">
+                                    <i class="bi bi-pie-chart me-2"></i>
+                                    Analyze Selected Crop
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <a href="{{ url_for('download_csv') }}" class="btn btn-outline-secondary px-4">
+                        <i class="bi bi-download me-2"></i>
+                        Download Sample Data
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-info bg-gradient text-white py-3">
+                <h4 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>
+                    About This Tool
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <p class="lead">This agricultural data analysis tool helps you understand:</p>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-graph-up-arrow text-primary fs-4 me-3"></i>
+                            <div>
+                                <h5>Yield Trends</h5>
+                                <p class="text-muted mb-0">Track crop performance over time</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-cloud-rain text-info fs-4 me-3"></i>
+                            <div>
+                                <h5>Rainfall Impact</h5>
+                                <p class="text-muted mb-0">Analyze weather correlations</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-bar-chart text-success fs-4 me-3"></i>
+                            <div>
+                                <h5>Crop Comparison</h5>
+                                <p class="text-muted mb-0">Compare different crop yields</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-calendar-check text-warning fs-4 me-3"></i>
+                            <div>
+                                <h5>Future Predictions</h5>
+                                <p class="text-muted mb-0">Forecast upcoming yields</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>
+                <i class="bi bi-filter-square me-2 text-success"></i>
+                Analysis for {{ crop_name }}
+            </h2>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>
+                Back to Analysis
+            </a>
+        </div>
+        <p class="text-muted">Detailed analysis and predictions for {{ crop_name }} based on historical data</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-bar-chart-line me-2"></i>
+                    Crop Statistics
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-calculator me-2"></i>Years of Data</span>
+                            <span class="badge bg-primary rounded-pill" data-bs-toggle="tooltip" title="Number of years analyzed">{{ stats.total_records }}</span>
+                        </div>
+                        <small class="text-muted">Total years of recorded data</small>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-arrow-up-right me-2"></i>Average Yield</span>
+                            <span class="badge bg-success rounded-pill" data-bs-toggle="tooltip" title="Mean production per hectare">{{ stats.avg_yield }}</span>
+                        </div>
+                        <small class="text-muted">Typical yield (tons/hectare)</small>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-arrow-up me-2"></i>Maximum Yield</span>
+                            <span class="badge bg-info rounded-pill" data-bs-toggle="tooltip" title="Best production achieved">{{ stats.max_yield }}</span>
+                        </div>
+                        <small class="text-muted">Peak yield performance</small>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-arrow-down me-2"></i>Minimum Yield</span>
+                            <span class="badge bg-warning rounded-pill" data-bs-toggle="tooltip" title="Lowest production recorded">{{ stats.min_yield }}</span>
+                        </div>
+                        <small class="text-muted">Lowest yield recorded</small>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-cloud-rain me-2"></i>Rainfall Correlation</span>
+                            <span class="badge bg-primary rounded-pill" data-bs-toggle="tooltip" 
+                                  title="Value of {{ stats.correlation }} shows a {% if stats.correlation > 0.7 %}strong{% elif stats.correlation > 0.4 %}moderate{% else %}weak{% endif %} relationship between rainfall and crop yield">
+                                {{ stats.correlation }}
+                            </span>
+                        </div>
+                        <small class="text-muted">Range: -1 to +1 ({{ stats.correlation }} indicates {% if stats.correlation > 0 %}positive{% else %}negative{% endif %} correlation)</small>
+                        <div class="mt-2">
+                            <small class="d-block text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                {% if stats.correlation > 0.7 %}
+                                    Strong positive correlation: Higher rainfall strongly relates to better yields
+                                {% elif stats.correlation > 0.4 %}
+                                    Moderate correlation: Rainfall has notable impact on yields
+                                {% elif stats.correlation > 0 %}
+                                    Weak correlation: Slight relationship between rainfall and yields
+                                {% elif stats.correlation > -0.4 %}
+                                    Weak negative correlation: Slight inverse relationship
+                                {% elif stats.correlation > -0.7 %}
+                                    Moderate negative correlation: Higher rainfall relates to lower yields
+                                {% else %}
+                                    Strong negative correlation: Higher rainfall strongly relates to lower yields
+                                {% endif %}
+                            </small>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-table me-2"></i>
+                    Historical Data
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Complete history of {{ crop_name }} performance data</p>
+                <div class="table-responsive">
+                    {{ tables[0] | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-graph-up me-2"></i>
+                    Performance Analysis
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="text-center mb-3">
+                                    <i class="bi bi-line-chart me-2"></i>
+                                    Yield Trends Over Time
+                                </h6>
+                                <p class="text-muted small text-center mb-3">Historical yield performance for {{ crop_name }}</p>
+                                <img src="data:image/png;base64,{{ plots.yield_trend }}" class="img-fluid rounded" alt="Yield Trends">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="text-center mb-3">
+                                    <i class="bi bi-cloud-rain me-2"></i>
+                                    Rainfall Impact Analysis
+                                </h6>
+                                <p class="text-muted small text-center mb-3">Relationship between rainfall and {{ crop_name }} yield</p>
+                                <img src="data:image/png;base64,{{ plots.rainfall_correlation }}" class="img-fluid rounded" alt="Rainfall Correlation">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0 text-dark">
+                    <i class="bi bi-graph-up-arrow me-2"></i>
+                    Future Predictions
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">Yield predictions for {{ crop_name }} based on historical trends</p>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="table-responsive mb-3">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Year</th>
+                                        {% for year in predictions.years %}
+                                        <th class="text-center">{{ year }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Predicted Yield</td>
+                                        {% for yield_val in predictions.yields %}
+                                        <td class="text-center">{{ "%.2f"|format(yield_val) }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="alert {% if predictions.trend > 0 %}alert-success{% else %}alert-danger{% endif %} d-flex align-items-center">
+                            <i class="bi {% if predictions.trend > 0 %}bi-arrow-up-right{% else %}bi-arrow-down-right{% endif %} me-2"></i>
+                            <div>
+                                <strong>Trend Analysis:</strong> 
+                                {% if predictions.trend > 0 %}
+                                Increasing yield trend suggests improving crop performance
+                                {% else %}
+                                Decreasing yield trend indicates potential challenges
+                                {% endif %}
+                                <br>
+                                <small>Statistical confidence: {{ "%.2f"|format(predictions.confidence * 100) }}% (higher is better)</small>
+                            </div>
+                        </div>
+                        <img src="data:image/png;base64,{{ predictions.plot }}" class="img-fluid rounded" alt="Yield Predictions">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
